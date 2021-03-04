@@ -1,23 +1,4 @@
-MISE AU POINT D UN PROGRAMME A L ARRACHE
-1.mise au point:
-ecrire des fonctions python dans un fichier mettons f.py juste pour leur nom:
 
-def machin():
-    pass 
-(...)
-
-2.modifier le nom de fichier lu dans essai_generation_test.py
-
-3. lancer la gene des tests 
-python3 essai_generation_test.py
-(cree fichier test_auto_f.py)
-
-4. lancer pytddmon
-python3 pytddmon
-
-5. si c est rouge, cliquer sur pytddmon pour avoir la stacktrace
-
-6. corriger les erreurs une par une, vert = fini
 
 CREER UNE BDD
 prendre BDD Ecole.pdf
