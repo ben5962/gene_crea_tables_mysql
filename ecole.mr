@@ -1,0 +1,5 @@
+inscription(#ref_enfant#,#ref_etablissement#,date_insc)
+etablissement(#ref_etablissement,nom,telephone,adresse)
+enfant(#ref_enfant,nom,prenom,num_compte#,date_naissance)
+compte(#num_compte,nom,prenom,solde,tranche#)
+tarif(#tranche,prix_cantine,prix_soir,prix_matin,prix_mercredi)

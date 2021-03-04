@@ -1,0 +1,15 @@
+ref_enfant int(3)
+ref_etablissement int(3)
+date_insc date
+nom text
+telephone int(15)
+adresse text
+prenom text
+date_naissance datetime
+num_compte int(3)
+solde decimal(6,2)
+tranche int(1)
+prix_cantine decimal(4,2)
+prix_soir decimal(4,2)
+prix_matin decimal(4,2)
+prix_mercredi decimal(4,2)
