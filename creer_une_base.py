@@ -1,8 +1,8 @@
 # coding: utf-8
 import copy
-dico = "ecole.dico"
-mr = "ecole.mr"
-nom_base="ecole"
+dico = "rdm.dico"
+mr = "rdm.mr"
+nom_base="rdm"
 
 
 
@@ -150,7 +150,7 @@ def deguiser_en_pk(chaine_fk_nettoyee):
 
 
 def trouver_table_referencee_par_fk(chaine_fk_nettoyee):
-    la_table =  {"score": False, "nom_table": False, "liste_champs":False }
+    la_table =  {"score": False, "nom_table": "PASTROUVEE", "liste_champs":False }
     for table in liste_des_tables:
         #je cherche une clef primaire de meme nom que la clef etrangere
         nom_clef_primaire_recherchee = deguiser_en_pk(chaine_fk_nettoyee)
@@ -172,16 +172,16 @@ def creer_chaine_base():
     lire_mr()
     liste_t = tri(liste_des_tables, acces_score)
     print("-- ordre de creation:")
-    for elem in liste_des_tables:
-        print(acces_nom_table(elem), ",")
+    for structure_table in liste_des_tables:
+        print(acces_nom_table(structure_table), ",")
     chaine = "DROP DATABASE IF EXISTS " + nom_base + ";"
     chaine += "\nCREATE DATABASE " + nom_base + ";"
     chaine += "\nUSE " + nom_base + ";"
-    for elem in liste_des_tables:
+    for structure_table in liste_des_tables:
         liste_des_pk = []
         liste_des_fk = []
-        chaine += "\n\nCREATE TABLE " + acces_nom_table(elem) + "("
-        for champ in acces_liste_champs(elem):
+        chaine += "\n\nCREATE TABLE " + acces_nom_table(structure_table) + "("
+        for champ in acces_liste_champs(structure_table):
             #tester avant de nettoyer
             if isPk(champ):
                 liste_des_pk.append(nettoyer(champ))
@@ -192,11 +192,11 @@ def creer_chaine_base():
             chaine += "\n " + champ + " " + getTypeFromNomChamp(champ) +","
         if liste_des_pk:
             chaine_pk = "CONSTRAINT pk_"
-            for elem in liste_des_pk:
-               chaine_pk = chaine_pk + "_" + elem
+            for champ_sur_lequel_sapplique_pk in liste_des_pk:
+               chaine_pk = chaine_pk + "_" + champ_sur_lequel_sapplique_pk
             chaine_pk = chaine_pk + " PRIMARY KEY("
-            for elem in liste_des_pk:
-                chaine_pk = chaine_pk + elem + ","
+            for champ_sur_lequel_sapplique_pk in liste_des_pk:
+                chaine_pk = chaine_pk + champ_sur_lequel_sapplique_pk + ","
             if chaine_pk[-1] == ",":
                 chaine_pk = chaine_pk[:-1]
             chaine_pk += ")"
@@ -207,11 +207,20 @@ def creer_chaine_base():
             
         chaine += "\n" + chaine_pk
         if liste_des_fk:
-            for elem in liste_des_fk:
+            for nom_champ_sur_lequel_contrainte_fk in liste_des_fk:
                 chaine_fk = ""
                 table_trouvee = {}
-                table_trouvee = trouver_table_referencee_par_fk(elem)
-                chaine_fk = "\nCONSTRAINT fk_" + elem + " FOREIGN KEY (" + elem + ") REFERENCES " + acces_nom_table(table_trouvee) + "(" + elem + "),"
+                table_trouvee = trouver_table_referencee_par_fk(nom_champ_sur_lequel_contrainte_fk)
+                chaine_fk = "\nCONSTRAINT fk_"
+                chaine_fk += acces_nom_table(structure_table) + "_"
+                chaine_fk += nom_champ_sur_lequel_contrainte_fk 
+                chaine_fk += " FOREIGN KEY (" 
+                chaine_fk += nom_champ_sur_lequel_contrainte_fk 
+                chaine_fk += ") REFERENCES " 
+                chaine_fk += acces_nom_table(table_trouvee) 
+                chaine_fk += "(" 
+                chaine_fk += nom_champ_sur_lequel_contrainte_fk 
+                chaine_fk += "),"
                 chaine += chaine_fk
             chaine = chaine[:-1]
         chaine += "\n);"
@@ -221,7 +230,7 @@ def creer_chaine_base():
 
 def main():
     chaine = creer_chaine_base()
-    nom_fichier = "creer_ecole.sql"
+    nom_fichier = "creer_" + nom_base + ".sql"
     with open(nom_fichier, mode = 'w') as w:
         w.write(chaine)
         w.close()
